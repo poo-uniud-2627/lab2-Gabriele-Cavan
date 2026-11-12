@@ -16,7 +16,11 @@ import java.awt.Color;
 public class OstacoloMobile implements Ostacolo {
     public static final Color COLORE = new Color(80, 200, 120);
 
-    private Rettangolo area;   // non è final: l'ostacolo si muove
+    private Rettangolo area;
+    private final double limiteAlto;
+    private final double limiteBasso;
+    private final double velocita; 
+    private int verso;  // non è final: l'ostacolo si muove
     // scrivete qui gli altri campi che vi servono
 
     /**
@@ -26,6 +30,10 @@ public class OstacoloMobile implements Ostacolo {
      */
     public OstacoloMobile(Rettangolo area, double velocita, double limiteAlto, double limiteBasso) {
         this.area = area;
+        this.velocita = velocita;
+        this.limiteAlto = limiteAlto;
+        this.limiteBasso = limiteBasso;
+        this.verso =1;
         // scrivete qui
     }
 
@@ -35,18 +43,18 @@ public class OstacoloMobile implements Ostacolo {
     /** Non si rompe mai: il colpo non cambia niente (né dove sta, né come si muove). */
     @Override
     public void colpisci(Ostacoli campo) {
-        // scrivete qui
+        // 
     }
 
     @Override
     public boolean isRotto() {
-        return false; // scrivete qui
+        return false; // non si rompe non è fragile
     }
 
     /** Promette: COLORE. */
     @Override
     public Color getColore() {
-        return null; // scrivete qui
+        return COLORE; // scrivete qui
     }
 
     /**
@@ -57,7 +65,16 @@ public class OstacoloMobile implements Ostacolo {
      * (area.y() + area.altezza() <= limiteBasso); x, larghezza e altezza non cambiano.
      */
     @Override
-    public void avanza() {
-        // scrivete qui
+    public void avanza() { 
+       double yNew = area.y()+ velocita*verso;
+       if(yNew + area.altezza()>=limiteBasso && verso == 1){
+            yNew = limiteBasso-area.altezza();
+            verso = -1;
+       }  
+       if (yNew <= limiteAlto && verso == -1){
+            yNew= limiteAlto;
+            verso = 1;
+        }
+        area = new Rettangolo(area.x(),yNew ,area.larghezza(), area.altezza());
     }
 }
